@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'LoginRegister',
   props: ['tab'],
@@ -40,11 +42,13 @@ export default {
     }
   },
   methods: {
+    ...mapActions('chat', ['registerUser', 'loginUser']),
+
     submitForm () {
       if (this.tab == 'login') {
-        alert('login')
+        this.loginUser(this.formData)
       } else {
-        alert('register')
+        this.registerUser(this.formData)
       }
     }
   }
