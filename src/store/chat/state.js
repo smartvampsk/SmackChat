@@ -1,5 +1,7 @@
 export default function () {
-  return {
-    userDetails: {}
-  }
+    return {
+        userDetails: {},
+        users: {},
+        messages: {},
+    }
 }
