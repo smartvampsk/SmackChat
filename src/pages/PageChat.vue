@@ -1,14 +1,18 @@
 <template>
-    <q-page class="flex column">
-        <q-banner class="bg-grey-4 text-center">
-            User is offline.
+    <q-page
+        ref="pageChat"
+        class="flex column">
+        <q-banner
+            v-if="!otherUserDetails.online"
+            class="bg-grey-4 text-center">
+            {{ otherUserDetails.name }} is offline.
         </q-banner>
 
         <div class="q-pa-md column col justify-end">
             <q-chat-message
-                v-for="message in messages"
-                :key="message.text"
-                :name="message.from"
+                v-for="(message, key) in messages"
+                :key="key"
+                :name="message.from == 'me' ? userDetails.name : otherUserDetails.name"
                 :text="[message.text]"
                 :sent="message.from == 'me' ? true : false"
             />
@@ -19,7 +23,7 @@
                     <q-input class="q-pb-none" bg-color="white" rounded outlined v-model="newMessage" label="Message"
                              counter dense>
                         <template v-slot:after>
-                            <q-btn type="submit" color="white" round dense flat icon="send"/>
+                            <q-btn type="submit" color="white" round dense flat icon="send" @click="sendMessage"/>
                         </template>
                     </q-input>
                 </q-form>
@@ -31,27 +35,42 @@
 <script>
 import { defineComponent } from 'vue'
 import { mapState, mapActions } from 'vuex'
+import mixinOtherUserDetails from 'src/mixins/mixin-other-user-details.js'
 
 export default defineComponent({
-    name: 'Pagechat',
+    name: 'PageChat',
+    mixins: [mixinOtherUserDetails],
     data () {
         return {
             newMessage: '',
         }
     },
+    computed: {
+        ...mapState('chat', ['messages', 'userDetails']),
+    },
     methods: {
-        ...mapActions('chat', ['firebaseGetMessages', 'firebaseStopGettingMessages']),
+        ...mapActions('chat', ['firebaseGetMessages', 'firebaseStopGettingMessages', 'firebaseSendMessage']),
 
         sendMessage () {
-            this.messages.push({
-                text: this.newMessage,
-                from: 'me',
+            this.firebaseSendMessage({
+                message: {
+                    text: this.newMessage,
+                    from: 'me',
+                },
+                otherUserId: this.$route.params.otherUserId
             })
+            this.newMessage = ''
+        },
+        scrollToBottom () {
+            console.log('scroll')
+            let pageChat = this.$refs.pageChat.$el
+            console.log(pageChat.scrollHeight)
+            setTimeout(() => {
+                window.scrollTo(0, pageChat.scrollHeight)
+            }, 20)
         }
     },
-    computed: {
-        ...mapState('chat', ['messages']),
-    },
+
     mounted () {
         this.firebaseGetMessages(this.$route.params.otherUserId)
     },

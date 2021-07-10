@@ -52,10 +52,11 @@
 
 import { defineComponent, ref } from 'vue'
 import { mapState, mapActions } from 'vuex'
+import mixinOtherUserDetails from 'src/mixins/mixin-other-user-details.js'
 
 export default defineComponent({
     name: 'MainLayout',
-
+    mixins: [mixinOtherUserDetails],
     components: {},
     computed: {
         ...mapState('chat', ['userDetails']),
@@ -63,8 +64,8 @@ export default defineComponent({
             const currentPath = this.$route.fullPath
             if (currentPath === '/') {
                 return 'SmackChat'
-            } else if (currentPath === '/chat') {
-                return 'Chat'
+            } else if (currentPath.includes('/chat')) {
+                return this.otherUserDetails.name
             } else if (currentPath === '/auth') return 'Auth'
         }
     },
