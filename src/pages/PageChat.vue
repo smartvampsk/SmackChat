@@ -24,9 +24,15 @@
         <q-footer elevated>
             <q-toolbar>
                 <q-form class="full-width" @submit="sendMessage">
-                    <q-input ref="newMessage" class="q-pb-none" bg-color="white" rounded outlined v-model="newMessage"
-                             label="Message"
-                             counter dense>
+                    <q-input
+                        v-model="newMessage"
+                        @blur="scrollToBottom"
+                        ref="newMessage"
+                        class="q-pb-none"
+                        bg-color="white" rounded outlined
+                        label="Message"
+                        counter
+                        dense>
                         <template v-slot:after>
                             <q-btn type="submit" color="white" round dense flat icon="send" @click="sendMessage"/>
                         </template>
@@ -72,11 +78,16 @@ export default defineComponent({
             this.$refs.newMessage.focus()
         },
         scrollToBottom () {
-            let pageChat = this.$refs.pageChat.$el
+            let page = document.getElementById('divChat')
+            let height = page.scrollHeight + 700
             setTimeout(() => {
-                window.scrollTo(0, pageChat.scrollHeight)
-                window.scrollTo(0, document.body.scrollHeight)
+                page.scrollTop = height
             }, 20)
+
+            // let pageChat = this.$refs.pageChat.$el
+            // setTimeout(() => {
+            //     window.scrollTo(0, pageChat.scrollHeight)
+            // })
         },
         messageBottomWatcher () {
             this.scrollToBottom()
@@ -119,12 +130,14 @@ export default defineComponent({
     background-image: radial-gradient(circle at 100% 150%, silver 24%, white 24%, white 28%, silver 28%, silver 36%, white 36%, white 40%, transparent 40%, transparent), radial-gradient(circle at 0 150%, silver 24%, white 24%, white 28%, silver 28%, silver 36%, white 36%, white 40%, transparent 40%, transparent), radial-gradient(circle at 50% 100%, white 10%, silver 10%, silver 23%, white 23%, white 30%, silver 30%, silver 43%, white 43%, white 50%, silver 50%, silver 63%, white 63%, white 71%, transparent 71%, transparent), radial-gradient(circle at 100% 50%, white 5%, silver 5%, silver 15%, white 15%, white 20%, silver 20%, silver 29%, white 29%, white 34%, silver 34%, silver 44%, white 44%, white 49%, transparent 49%, transparent), radial-gradient(circle at 0 50%, white 5%, silver 5%, silver 15%, white 15%, white 20%, silver 20%, silver 29%, white 29%, white 34%, silver 34%, silver 44%, white 44%, white 49%, transparent 49%, transparent);
     background-size: 100px 50px;
 }
-.q-banner{
+
+.q-banner {
     top: 50px;
     z-index: 2;
     opacity: 0.8;
 }
-.q-message{
+
+.q-message {
     z-index: 1;
 }
 </style>

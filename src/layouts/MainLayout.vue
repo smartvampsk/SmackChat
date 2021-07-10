@@ -5,6 +5,7 @@
                 <q-btn
                     v-if="$route.fullPath.includes('/chat')"
                     @click="$router.go(-1)"
+                    class="absolute-left"
                     icon="arrow_back"
                     flat
                     dense
@@ -85,3 +86,4 @@ export default defineComponent({
     }
 })
 </script>
+
